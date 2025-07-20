@@ -8,38 +8,50 @@ function App() {
   const [description, setDescription] = useState('');
   const [todos, setTodos] = useState([]);
   const handleAdd = () => {
-  
-  if (task.trim() === '') return;
 
-  
-  const newTask = {
-    id: Date.now(),         
-    task: task,             
-    description: description, 
-    completed: false        
+    if (task.trim() === '') return;
+
+
+    const newTask = {
+      id: Date.now(),
+      task: task,
+      description: description,
+      completed: false
+    };
+
+
+    setTodos([...todos, newTask]);
+
+
+    setTask('');
+    setDescription('');
   };
 
-  
-  setTodos([...todos, newTask]);
+  const toggleComplete = (id) => {
+    const updatedTodos = todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    );
+    setTodos(updatedTodos);
+  };
 
-  
-  setTask('');
-  setDescription('');
-};
+  const deleteTask = (id) => {
+    const updatedTodos = todos.filter(todo => todo.id !== id);
+    setTodos(updatedTodos);
+  };
 
 
   return (
     <>
-      <div className="w-full h-screen bg-gradient-to-br from-sky-100 to-indigo-200">
+      <div className="w-full h-svw bg-gradient-to-br from-sky-100 to-indigo-200">
         <div className="h-16 w-full text-3xl flex items-center justify-center font-extrabold text-gray-700 bg-gray-100 border border-gray-300 shadow-sm rounded-md">
           My To-do List
         </div>
-        <div className="max-w-2xl mx-auto p-6 bg-gradient-to-br from-white/90 to-amber-50 rounded-2xl shadow-lg backdrop-blur-sm">
+        <div className="max-w-2xl mx-auto mt-2 p-6 bg-gradient-to-br from-white/90 to-amber-50 rounded-2xl shadow-lg backdrop-blur-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div className="flex flex-col">
               <label className="text-lg font-semibold text-gray-700 mb-2">Task:</label>
-              <input
+              <input className='p-1'
                 type="text"
                 placeholder="Enter a task"
                 value={task}
@@ -53,7 +65,7 @@ function App() {
 
             <div className="flex flex-col">
               <label className="text-lg font-semibold text-gray-700 mb-2">Description:</label>
-              <input
+              <input className='p-1'
                 type="text"
                 placeholder="Write the description"
                 value={description}
@@ -65,8 +77,35 @@ function App() {
             </div>
           </div>
         </div>
+        <div className="max-w-2xl mx-auto mt-6 p-4 bg-white rounded-xl shadow">
+          {todos.map((todo) => (
+            <div key={todo.id} className={`border-b py-4 ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-xl font-bold">{todo.task}</h3>
+                  <p className="text-sm">{todo.description}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    className="px-3 py-1 bg-yellow-400 rounded hover:bg-yellow-500"
+                    onClick={() => toggleComplete(todo.id)}
+                  >
+                    {todo.completed ? 'Undo' : 'Complete'}
+                  </button>
+                  <button
+                    className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                    onClick={() => deleteTask(todo.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
 
+        </div>
       </div>
+
     </>
   )
 }
